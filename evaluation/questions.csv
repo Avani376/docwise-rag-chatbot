@@ -1,0 +1,26 @@
+id,question,answerable,expected_terms
+1,When does fall semester begin?,true,September 3
+2,What is the last day to add a fall course?,true,September 12
+3,By what date can I withdraw without academic penalty?,true,October 31
+4,How much does late work lose each day?,true,five percent
+5,How many days can an instructor extend an assignment?,true,seven calendar days
+6,What are the main library hours Monday through Thursday?,true,7 a.m. to midnight
+7,How many books can a student borrow at once?,true,20 books
+8,When is the financial aid renewal form due?,true,April 15
+9,How many hours per week can work-study students work during term?,true,15 hours per week
+10,When are fall housing applications due?,true,May 1
+11,How much is the housing deposit?,true,$200
+12,What are weekday residence hall quiet hours?,true,10 p.m. to 8 a.m.
+13,How long may an overnight guest stay?,true,three consecutive nights
+14,How many business days does a student have to respond to an integrity notice?,true,five business days
+15,How long may a student appeal an academic integrity finding?,true,ten business days
+16,How many individual counseling sessions are free each academic year?,true,eight individual sessions
+17,What is the maximum annual programming budget for a recognized club?,true,$500
+18,How long can a loaner laptop be borrowed?,true,seven days
+19,What date is the spring semester start?,true,January 21
+20,What is the campus gym's weekend opening time?,false,
+21,Which meal plan costs the least?,false,
+22,What is the university president's name?,false,
+23,How much is annual tuition?,false,
+24,What is the deadline to apply for summer housing?,false,
+25,Which parking lot is closest to the science building?,false,
