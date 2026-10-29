@@ -10,7 +10,7 @@
 ![Streamlit](https://img.shields.io/badge/Streamlit-UI-FF4B4B?logo=streamlit&logoColor=white)
 ![RAG](https://img.shields.io/badge/RAG-local%20retrieval-0F766E)
 
-**Live deployment:** Vercel Container Runtime is configured, but deployment is pending owner authentication and plan/billing confirmation. There is intentionally no unverified public URL here.
+**Live deployment:** [docwise-rag-chatbot.vercel.app](https://docwise-rag-chatbot.vercel.app) — verified in API-key-free mode with the fictional Northstar University sample PDF.
 
 [Watch the verified 84-second local demo](assets/demo.mp4) · [View the benchmark](evaluation/results.md) · [Open the fictional sample corpus](documents/northstar_student_policy.pdf)
 
@@ -194,19 +194,15 @@ This is a small, corpus-specific retrieval and local-abstention check—not an a
 - If optional synthesis is configured, only the question and retrieved passages leave the app; the original PDF does not.
 - The embedding weights download from Hugging Face on first use and are cached locally.
 
-## Deployment status and preparation
+## Deployment
 
 The app was validated locally with Python 3.11 and starts from the repository root with `python -m streamlit run app.py`. It now includes `Dockerfile.vercel`, the documented Vercel Container Runtime route for an HTTP server that is not a native ASGI/WSGI application.
 
-The container starts Streamlit on Vercel's `$PORT`, limits uploads to 4 MB to stay under Vercel's 4.5 MB Function request-body limit, forces session-scoped libraries, and writes Hugging Face model downloads to `/tmp`. The filesystem and session state are therefore ephemeral; uploaded documents must not be treated as durable or private storage. Vercel's Container Runtime is beta and uses Active CPU pricing, so confirm the account plan before deploying.
+The container starts Streamlit on Vercel's `$PORT`, limits uploads to 4 MB to stay under Vercel's 4.5 MB Function request-body limit, forces session-scoped libraries, and writes Hugging Face model downloads to `/tmp`. The filesystem and session state are therefore ephemeral; uploaded documents must not be treated as durable or private storage. The image pins CPU-only PyTorch so deployment does not package CUDA runtime dependencies.
 
-A public deployment cannot be completed here without the repository owner signing in to Vercel, authorizing the project, and confirming that the selected plan is acceptable. When ready:
+The current production deployment was verified in a fresh browser session on 2026-10-29: it indexed the bundled sample into seven passages, answered the fall-semester question with a page-1 citation, and returned **No supported answer** for the unsupported campus-gym question. It runs without an OpenAI key.
 
-1. Connect Vercel to the repository or deploy the local checkout through an authorized Vercel session.
-2. Use the existing `main` branch and let `Dockerfile.vercel` select the Container Runtime.
-3. Leave secrets empty for the API-key-free demo, or configure `OPENAI_API_KEY` only in Vercel's environment-variable settings.
-4. Open the deployment in a fresh browser session, index the fictional sample, ask the grounded and unsupported questions, and verify the evidence panel.
-5. Check cold-start behavior: the first embedding request downloads `all-MiniLM-L6-v2`, which may be slow or exceed resource limits on a small container.
+For a redeployment, use the existing `main` branch and `Dockerfile.vercel`. Leave secrets empty for the API-key-free demo, or configure `OPENAI_API_KEY` only in Vercel's environment-variable settings. First indexing after an instance cold start downloads `all-MiniLM-L6-v2`, so it can take longer than subsequent requests. Vercel's Container Runtime is beta and uses Active CPU pricing; monitor account usage if sharing the demo broadly.
 
 ## Troubleshooting
 
