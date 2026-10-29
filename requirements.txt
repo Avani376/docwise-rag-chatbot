@@ -1,4 +1,8 @@
 # Validated with Python 3.11 on 2026-10-29. Major-version caps keep deployments reproducible.
+# Sentence Transformers needs PyTorch.  Use its CPU wheel so the Vercel
+# container does not pull the much larger CUDA runtime packages.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.9.1+cpu
 streamlit>=1.38,<2
 pypdf>=5,<7
 sentence-transformers>=3,<7
