@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Docwise RAG architecture</title>
+  <desc id="desc">PDF extraction to chunks, local embeddings, SQLite vector index, similarity retrieval, an optional OpenAI synthesis branch, and an evidence-cited answer or abstention.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#071425"/><stop offset="1" stop-color="#0b1630"/></linearGradient>
+    <linearGradient id="accent" x1="0" x2="1"><stop stop-color="#22d3ee"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="6" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#50d8ff"/></marker>
+    <marker id="mutedArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#a78bfa"/></marker>
+    <style>
+      .kicker{font:600 17px Arial,sans-serif;letter-spacing:3px;fill:#67e8f9}.title{font:700 45px Arial,sans-serif;fill:#f8fafc}.subtitle{font:400 19px Arial,sans-serif;fill:#b9c8db}.box{fill:#101f3d;stroke:#2d5f91;stroke-width:2}.box2{fill:#102a42;stroke:#2dd4bf;stroke-width:2}.box3{fill:#201c4a;stroke:#8b5cf6;stroke-width:2}.boxTitle{font:700 18px Arial,sans-serif;fill:#f8fafc}.body{font:400 15px Arial,sans-serif;fill:#bfdbfe}.detail{font:600 14px Arial,sans-serif;fill:#67e8f9}.optional{font:600 13px Arial,sans-serif;fill:#c4b5fd}.footer{font:400 15px Arial,sans-serif;fill:#94a3b8}.arrow{fill:none;stroke:#50d8ff;stroke-width:4;marker-end:url(#arrow)}.dashed{fill:none;stroke:#a78bfa;stroke-width:3;stroke-dasharray:10 8;marker-end:url(#mutedArrow)}
+    </style>
+  </defs>
+  <rect width="1600" height="900" fill="url(#background)"/>
+  <path d="M0 185H1600M0 760H1600" stroke="#17365b" stroke-width="1" opacity=".65"/>
+  <circle cx="1490" cy="100" r="210" fill="#172554" opacity=".32"/><circle cx="90" cy="820" r="210" fill="#0e7490" opacity=".12"/>
+  <text x="80" y="80" class="kicker">DOCWISE · EVIDENCE-GROUNDED RAG</text>
+  <text x="80" y="135" class="title">How an answer stays tied to the PDF</text>
+  <text x="80" y="170" class="subtitle">Text and embeddings are local by default; every retrieved passage preserves its original filename and page.</text>
+
+  <g transform="translate(80 270)">
+    <rect class="box" rx="18" width="195" height="180"/>
+    <rect x="20" y="22" width="42" height="51" rx="7" fill="#38bdf8" opacity=".2" stroke="#67e8f9"/>
+    <path d="M31 35h20M31 45h20M31 55h14" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round"/>
+    <text x="20" y="108" class="boxTitle">PDF ingestion</text><text x="20" y="136" class="body">Upload or bundled</text><text x="20" y="158" class="body">sample policy PDF</text>
+  </g>
+  <path class="arrow" d="M275 360H320"/>
+  <g transform="translate(320 270)">
+    <rect class="box" rx="18" width="195" height="180"/>
+    <text x="20" y="50" class="boxTitle">Text extraction</text><text x="20" y="82" class="detail">pypdf</text><text x="20" y="113" class="body">Page-by-page text</text><text x="20" y="137" class="body">with clear PDF errors</text>
+  </g>
+  <path class="arrow" d="M515 360H560"/>
+  <g transform="translate(560 270)">
+    <rect class="box" rx="18" width="195" height="180"/>
+    <text x="20" y="50" class="boxTitle">Page-preserving chunks</text><text x="20" y="82" class="detail">850 chars · 140 overlap</text><text x="20" y="113" class="body">Source filename +</text><text x="20" y="137" class="body">original page stored</text>
+  </g>
+  <path class="arrow" d="M755 360H800"/>
+  <g transform="translate(800 270)">
+    <rect class="box2" rx="18" width="195" height="180"/>
+    <text x="20" y="50" class="boxTitle">Local embeddings</text><text x="20" y="82" class="detail">all-MiniLM-L6-v2 · CPU</text><text x="20" y="113" class="body">Normalized passage</text><text x="20" y="137" class="body">and question vectors</text>
+  </g>
+  <path class="arrow" d="M995 360H1040"/>
+  <g transform="translate(1040 270)">
+    <rect class="box2" rx="18" width="195" height="180"/>
+    <text x="20" y="50" class="boxTitle">SQLite vector index</text><text x="20" y="82" class="detail">BLOB vectors + metadata</text><text x="20" y="113" class="body">Content hashes avoid</text><text x="20" y="137" class="body">unnecessary re-indexing</text>
+  </g>
+  <path class="arrow" d="M1235 360H1280"/>
+  <g transform="translate(1280 270)">
+    <rect class="box2" rx="18" width="240" height="180"/>
+    <text x="20" y="50" class="boxTitle">Similarity retrieval</text><text x="20" y="82" class="detail">Cosine ranking + threshold</text><text x="20" y="113" class="body">Top passages become</text><text x="20" y="137" class="body">reviewable evidence</text>
+  </g>
+
+  <path class="arrow" d="M1400 450V565H1135"/>
+  <g transform="translate(900 565)">
+    <rect class="box" rx="18" width="460" height="130"/>
+    <text x="25" y="45" class="boxTitle">Local extractive answer or abstention</text><text x="25" y="77" class="body">Quote a sentence only when it contains specific question evidence.</text><text x="25" y="103" class="detail">Unsupported question → “No supported answer”</text>
+  </g>
+  <path class="dashed" d="M1400 450V535H1455V565"/>
+  <g transform="translate(1375 565)">
+    <rect class="box3" rx="18" width="145" height="130"/>
+    <text x="18" y="39" class="boxTitle">OpenAI</text><text x="18" y="63" class="optional">Optional only</text><text x="18" y="88" class="body">Question +</text><text x="18" y="109" class="body">passages</text>
+  </g>
+  <text x="1410" y="530" class="optional">optional synthesis path</text>
+  <path class="arrow" d="M1130 695V750"/>
+  <path class="arrow" d="M1445 695V750H1210"/>
+  <g transform="translate(665 750)">
+    <rect x="0" y="0" width="560" height="90" rx="18" fill="url(#accent)" filter="url(#glow)"/>
+    <text x="30" y="37" class="boxTitle">Answer + retrieved evidence</text><text x="30" y="65" class="body" fill="#eff6ff">Source filename · original PDF page · similarity score · passage text</text>
+  </g>
+  <text x="80" y="875" class="footer">The original PDF is not sent to an external answer provider. Session isolation is the safe default for shared hosts.</text>
+</svg>

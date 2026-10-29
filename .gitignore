@@ -4,6 +4,9 @@
 .venv/
 venv/
 __pycache__/
+.pytest_cache/
+.coverage
+*.py[cod]
 .streamlit/secrets.toml
 data/
 *.sqlite3*
