@@ -1,0 +1,16 @@
+.git/
+.github/
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+.coverage
+*.py[cod]
+.env
+.env.*
+data/
+*.sqlite3*
+assets/
+evaluation/
+tests/
+README.md

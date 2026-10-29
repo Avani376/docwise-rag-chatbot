@@ -10,7 +10,7 @@
 ![Streamlit](https://img.shields.io/badge/Streamlit-UI-FF4B4B?logo=streamlit&logoColor=white)
 ![RAG](https://img.shields.io/badge/RAG-local%20retrieval-0F766E)
 
-**Live deployment:** pending owner authorization for a hosting account. There is intentionally no unverified public URL here.
+**Live deployment:** Vercel Container Runtime is configured, but deployment is pending owner authentication and plan/billing confirmation. There is intentionally no unverified public URL here.
 
 [Watch the verified 84-second local demo](assets/demo.mp4) · [View the benchmark](evaluation/results.md) · [Open the fictional sample corpus](documents/northstar_student_policy.pdf)
 
@@ -52,9 +52,9 @@ The video was rendered from real local app captures using only the included fict
 
 ## Key features
 
-- Page-preserving text extraction with \`pypdf\`.
+- Page-preserving text extraction with `pypdf`.
 - Overlapping passages (about 850 characters with 140-character overlap).
-- Local CPU embeddings via \`sentence-transformers/all-MiniLM-L6-v2\`.
+- Local CPU embeddings via `sentence-transformers/all-MiniLM-L6-v2`.
 - SQLite persistence for normalized vectors, source filenames, pages, and text.
 - Cosine-similarity retrieval with a configurable threshold.
 - Visible filename, original page, similarity score, and passage text for every displayed result.
@@ -69,9 +69,9 @@ The video was rendered from real local app captures using only the included fict
 ![Docwise RAG architecture](assets/rag-architecture.png)
 
 1. A PDF is uploaded or the fictional sample is indexed.
-2. \`pypdf\` extracts text while preserving each page number.
+2. `pypdf` extracts text while preserving each page number.
 3. Docwise creates overlapping chunks that retain the original filename and page.
-4. \`all-MiniLM-L6-v2\` generates normalized CPU embeddings.
+4. `all-MiniLM-L6-v2` generates normalized CPU embeddings.
 5. SQLite stores vectors and source metadata for the configured library.
 6. A question is compared against passages with cosine similarity.
 7. Threshold-qualified passages become reviewable evidence.
@@ -84,8 +84,8 @@ The video was rendered from real local app captures using only the included fict
 | Area | Implementation |
 |---|---|
 | UI | Streamlit |
-| PDF parsing | \`pypdf\` |
-| Embeddings | Sentence Transformers \`all-MiniLM-L6-v2\` on CPU |
+| PDF parsing | `pypdf` |
+| Embeddings | Sentence Transformers `all-MiniLM-L6-v2` on CPU |
 | Vector persistence | SQLite BLOB vectors plus source metadata |
 | Retrieval | Normalized dot product / cosine similarity |
 | Answering | Local extractive fallback; optional OpenAI Responses API synthesis |
@@ -93,7 +93,7 @@ The video was rendered from real local app captures using only the included fict
 
 ## Repository structure
 
-\`\`\`text
+```text
 app.py                         Streamlit interface and session-library handling
 rag.py                         Extraction, chunks, embeddings, SQLite, retrieval, answers
 evaluate.py                    Isolated benchmark runner
@@ -104,7 +104,7 @@ documents/                     Fictional sample PDF and its editable source text
 evaluation/                    Benchmark cases and verified results
 assets/                        Real screenshots, demo video, banner, architecture graphic
 data/                          Runtime model cache and local index; ignored by Git
-\`\`\`
+```
 
 ## Run locally
 
@@ -117,50 +117,50 @@ data/                          Runtime model cache and local index; ignored by G
 
 ### Windows PowerShell
 
-\`\`\`powershell
+```powershell
 py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 Copy-Item .env.example .env
 python -m streamlit run app.py
-\`\`\`
+```
 
 ### macOS or Linux
 
-\`\`\`bash
+```bash
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 cp .env.example .env
 python -m streamlit run app.py
-\`\`\`
+```
 
 Open the local URL Streamlit prints. Choose **Index sample PDF**, then ask “When does the fall semester begin?” First launch downloads the embedding model; later runs reuse its cache.
 
 ## Configuration
 
-Copy \`.env.example\` to \`.env\`. The template contains placeholders only and \`.env\` is ignored by Git.
+Copy `.env.example` to `.env`. The template contains placeholders only and `.env` is ignored by Git.
 
 | Variable | Default | Purpose |
 |---|---|---|
-| \`OPENAI_API_KEY\` | unset | Enables optional OpenAI answer synthesis. |
-| \`OPENAI_MODEL\` | \`gpt-4.1-mini\` | Model requested for optional synthesis. |
-| \`EMBED_MODEL\` | \`sentence-transformers/all-MiniLM-L6-v2\` | Local model for passages and questions. |
-| \`SIMILARITY_THRESHOLD\` | \`0.39\` | Minimum cosine similarity for a passage to be considered. |
-| \`VECTOR_DB_PATH\` | \`data/vectors.sqlite3\` | Optional SQLite location in persistent mode. |
-| \`DOCWISE_LIBRARY_MODE\` | \`session\` | \`session\` isolates browsers; \`persistent\` is for a private local installation. |
+| `OPENAI_API_KEY` | unset | Enables optional OpenAI answer synthesis. |
+| `OPENAI_MODEL` | `gpt-4.1-mini` | Model requested for optional synthesis. |
+| `EMBED_MODEL` | `sentence-transformers/all-MiniLM-L6-v2` | Local model for passages and questions. |
+| `SIMILARITY_THRESHOLD` | `0.39` | Minimum cosine similarity for a passage to be considered. |
+| `VECTOR_DB_PATH` | `data/vectors.sqlite3` | Optional SQLite location in persistent mode. |
+| `DOCWISE_LIBRARY_MODE` | `session` | `session` isolates browsers; `persistent` is for a private local installation. |
 
 ### Optional OpenAI synthesis
 
-If \`OPENAI_API_KEY\` is set, Docwise sends only the user question and threshold-qualified retrieved passages to OpenAI. The original PDF is not uploaded by the app. The synthesis prompt restricts the answer to those passages and requires citation markers such as \`[1]\`.
+If `OPENAI_API_KEY` is set, Docwise sends only the user question and threshold-qualified retrieved passages to OpenAI. The original PDF is not uploaded by the app. The synthesis prompt restricts the answer to those passages and requires citation markers such as `[1]`.
 
 If a provider request fails—for example due to missing access, a rate limit, or a network failure—the app labels the result as a local fallback or unsupported answer. It does not show a raw provider traceback or silently present a failed call as a synthesized response.
 
 ## Source attribution and abstention
 
-Each chunk retains its original source filename and page. A local citation such as \`[1]\` maps to a visible entry in **Retrieved evidence**, which displays source, original PDF page, similarity score, and chunk text.
+Each chunk retains its original source filename and page. A local citation such as `[1]` maps to a visible entry in **Retrieved evidence**, which displays source, original PDF page, similarity score, and chunk text.
 
 Similarity is not proof. If the local sentence extractor cannot find specific question evidence, Docwise returns **No supported answer**. Related passages may still be shown for inspection, but are not presented as support for the answer.
 
@@ -168,13 +168,13 @@ Similarity is not proof. If the local sentence extractor cannot find specific qu
 
 Run the included benchmark from the repository root:
 
-\`\`\`bash
+```bash
 python evaluate.py
-\`\`\`
+```
 
 The runner sets a temporary SQLite path before importing the RAG module, so it does not clear or overwrite the normal document library.
 
-The verified 2026-10-29 run used Python 3.11, the bundled fictional PDF, \`all-MiniLM-L6-v2\` on CPU, and threshold \`0.39\`.
+The verified 2026-10-29 run used Python 3.11, the bundled fictional PDF, `all-MiniLM-L6-v2` on CPU, and threshold `0.39`.
 
 | Measure | Verified result |
 |---|---:|
@@ -189,24 +189,24 @@ This is a small, corpus-specific retrieval and local-abstention check—not an a
 
 - By default, each browser session receives a separate SQLite library in host temporary storage, preventing app-level cross-session search.
 - Session-library files are not automatically removed when a browser closes. **Clear this library** removes that session database. Do not use a shared host for confidential documents unless its storage controls are appropriate.
-- \`DOCWISE_LIBRARY_MODE=persistent\` is for a private, single-user local installation.
+- `DOCWISE_LIBRARY_MODE=persistent` is for a private, single-user local installation.
 - Local extraction, chunking, embeddings, and retrieval do not call OpenAI.
 - If optional synthesis is configured, only the question and retrieved passages leave the app; the original PDF does not.
 - The embedding weights download from Hugging Face on first use and are cached locally.
 
 ## Deployment status and preparation
 
-The app was validated locally with Python 3.11 and starts from the repository root with \`python -m streamlit run app.py\`. It is prepared for Streamlit Community Cloud with \`app.py\` and \`requirements.txt\` at the repository root.
+The app was validated locally with Python 3.11 and starts from the repository root with `python -m streamlit run app.py`. It now includes `Dockerfile.vercel`, the documented Vercel Container Runtime route for an HTTP server that is not a native ASGI/WSGI application.
 
-A public deployment cannot be completed here without the repository owner signing in to a hosting account and authorizing the deployment. When ready:
+The container starts Streamlit on Vercel's `$PORT`, limits uploads to 4 MB to stay under Vercel's 4.5 MB Function request-body limit, forces session-scoped libraries, and writes Hugging Face model downloads to `/tmp`. The filesystem and session state are therefore ephemeral; uploaded documents must not be treated as durable or private storage. Vercel's Container Runtime is beta and uses Active CPU pricing, so confirm the account plan before deploying.
 
-1. Sign in to Streamlit Community Cloud with the GitHub account that owns this repository.
-2. Choose \`Avani376/docwise-rag-chatbot\`, the existing \`main\` branch, and \`app.py\`.
-3. Select Python 3.11 in Advanced settings if a version selector is offered.
-4. Leave secrets empty for the API-key-free demo, or configure \`OPENAI_API_KEY\` only in the platform secret manager.
-5. Open the deployed app in a fresh browser session, index the fictional sample, ask the grounded and unsupported questions, and verify the evidence panel.
+A public deployment cannot be completed here without the repository owner signing in to Vercel, authorizing the project, and confirming that the selected plan is acceptable. When ready:
 
-The default session-library mode is deliberate for shared hosts: host filesystems can be ephemeral, and uploaded libraries must not be treated as durable or private storage.
+1. Connect Vercel to the repository or deploy the local checkout through an authorized Vercel session.
+2. Use the existing `main` branch and let `Dockerfile.vercel` select the Container Runtime.
+3. Leave secrets empty for the API-key-free demo, or configure `OPENAI_API_KEY` only in Vercel's environment-variable settings.
+4. Open the deployment in a fresh browser session, index the fictional sample, ask the grounded and unsupported questions, and verify the evidence panel.
+5. Check cold-start behavior: the first embedding request downloads `all-MiniLM-L6-v2`, which may be slow or exceed resource limits on a small container.
 
 ## Troubleshooting
 
@@ -217,7 +217,7 @@ The default session-library mode is deliberate for shared hosts: host filesystem
 | PDF cannot be read | Use an unlocked, valid PDF; malformed and encrypted files are rejected clearly. |
 | Question is unsupported | Rephrase it, add a relevant PDF, or inspect the passages. Do not treat related text as proof. |
 | OpenAI synthesis is unavailable | The local fallback still works; check key, model access, network, and rate limit if synthesis is needed. |
-| Library disappeared after browser restart | That is expected in \`session\` mode; use persistent mode only for a private local install. |
+| Library disappeared after browser restart | That is expected in `session` mode; use persistent mode only for a private local install. |
 
 ## Known limitations
 
