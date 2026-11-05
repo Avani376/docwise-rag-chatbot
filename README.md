@@ -14,6 +14,8 @@
 
 [Watch the verified 84-second local demo](assets/demo.mp4) · [View the benchmark](evaluation/results.md) · [Open the fictional sample corpus](documents/northstar_student_policy.pdf)
 
+**Guides:** [Use Docwise](docs/USER_GUIDE.md) · [Contribute and validate changes](CONTRIBUTING.md) · [Deploy safely on Vercel](docs/DEPLOYMENT.md)
+
 > **Demo-content notice:** Northstar University and every policy in the bundled sample PDF are fictional. They are included only to demonstrate the application and evaluation workflow.
 
 ## What problem does it solve?
