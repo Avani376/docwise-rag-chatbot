@@ -35,7 +35,7 @@ Similarity scores rank nearby passages; they do not establish that a claim is tr
 
 ## Privacy and storage
 
-The default `DOCWISE_LIBRARY_MODE=session` gives each browser session a separate SQLite index in temporary host storage. This prevents normal app searches across browser sessions, but it is not a formal privacy boundary and files are not automatically deleted when the browser closes. Use **Clear this library** when you are finished.
+The default `DOCWISE_LIBRARY_MODE=session` gives each browser session a separate SQLite index in temporary host storage. This prevents normal app searches across browser sessions, but it is not a formal privacy boundary. Files are not removed immediately when the browser closes; when a later session starts, Docwise opportunistically prunes inactive session libraries older than 24 hours. Use **Clear this library** when you are finished.
 
 Use `DOCWISE_LIBRARY_MODE=persistent` only for a private, single-user local installation. On the public Vercel demo, the filesystem and session state are ephemeral; do not upload confidential PDFs.
 

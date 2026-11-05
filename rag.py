@@ -5,7 +5,9 @@ import hashlib
 import io
 import os
 import re
+import shutil
 import sqlite3
+import time
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
@@ -217,6 +219,39 @@ def clear_library(db_path: Path | str | None = None) -> None:
         candidate = path.with_name(f"{path.name}{suffix}")
         if candidate.is_file():
             candidate.unlink()
+
+
+def remove_stale_session_libraries(
+    root: Path,
+    current_library: Path,
+    max_age_seconds: float,
+    now: float | None = None,
+) -> int:
+    """Remove inactive session-library directories without touching the active one."""
+    if max_age_seconds <= 0 or not root.is_dir():
+        return 0
+    cutoff = (time.time() if now is None else now) - max_age_seconds
+    removed = 0
+    try:
+        candidates = list(root.iterdir())
+    except OSError:
+        return 0
+    for candidate in candidates:
+        if candidate == current_library or candidate.is_symlink() or not candidate.is_dir():
+            continue
+        try:
+            modified = max(
+                [candidate.stat().st_mtime]
+                + [entry.stat().st_mtime for entry in candidate.iterdir() if not entry.is_symlink()]
+            )
+            if modified >= cutoff:
+                continue
+            shutil.rmtree(candidate)
+            removed += 1
+        except OSError:
+            # Cleanup is best effort: a concurrent write or host restriction must not break the app.
+            continue
+    return removed
 
 
 def retrieve(query: str, top_k: int = 5, db_path: Path | str | None = None) -> list[dict]:

@@ -18,6 +18,7 @@ from rag import (
     chunk_pages,
     clear_library,
     list_sources,
+    remove_stale_session_libraries,
 )
 
 
@@ -84,6 +85,28 @@ class RagRegressionTests(unittest.TestCase):
                 add_pdf(b"pdf bytes", "policy.pdf", database)
             clear_library(database)
             self.assertFalse(database.exists())
+
+    def test_stale_session_cleanup_preserves_current_and_recent_libraries(self) -> None:
+        now = 2_000_000.0
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "docwise-session-libraries"
+            stale = root / "stale"
+            recent = root / "recent"
+            current = root / "current"
+            for library in (stale, recent, current):
+                library.mkdir(parents=True)
+                (library / "vectors.sqlite3").write_bytes(b"database")
+            os.utime(stale, (now - 7_200, now - 7_200))
+            os.utime(stale / "vectors.sqlite3", (now - 7_200, now - 7_200))
+            os.utime(current, (now - 7_200, now - 7_200))
+            os.utime(current / "vectors.sqlite3", (now - 7_200, now - 7_200))
+
+            removed = remove_stale_session_libraries(root, current, max_age_seconds=3_600, now=now)
+
+            self.assertEqual(removed, 1)
+            self.assertFalse(stale.exists())
+            self.assertTrue(recent.exists())
+            self.assertTrue(current.exists())
 
     def test_openai_failure_is_labeled_and_keeps_retrieved_evidence(self) -> None:
         passages = [

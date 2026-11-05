@@ -36,7 +36,7 @@ The currently verified public deployment is [docwise-rag-chatbot.vercel.app](htt
 
 ## Storage and privacy boundaries
 
-Vercel containers and `/tmp` storage are ephemeral. The SQLite library and Hugging Face cache may disappear after an instance restart or redeployment. The session-scoped design avoids normal cross-browser library searches, but it is not multi-tenant authentication, durable storage, or a formal retention system.
+Vercel containers and `/tmp` storage are ephemeral. The SQLite library and Hugging Face cache may disappear after an instance restart or redeployment. On a warm instance, Docwise also opportunistically prunes inactive session-library directories older than 24 hours when a later session starts. The session-scoped design avoids normal cross-browser library searches, but it is not multi-tenant authentication, durable storage, or a formal retention system.
 
 Do not present the hosted demo as suitable for confidential PDFs. Do not persist user uploads, index files, credentials, or model weights in the repository or public object storage without an explicit security and retention design.
 

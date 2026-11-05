@@ -8,10 +8,12 @@ from pathlib import Path
 
 import streamlit as st
 
-from rag import add_pdf, answer_question, clear_library, delete_source, list_sources
+from rag import add_pdf, answer_question, clear_library, delete_source, list_sources, remove_stale_session_libraries
 
 
 st.set_page_config(page_title="Docwise | PDF assistant", page_icon="D", layout="wide")
+
+SESSION_LIBRARY_TTL_SECONDS = 24 * 60 * 60
 
 
 def _library_path() -> Path | None:
@@ -20,12 +22,12 @@ def _library_path() -> Path | None:
         return None
     if "docwise_library_id" not in st.session_state:
         st.session_state["docwise_library_id"] = uuid.uuid4().hex
-    return (
-        Path(tempfile.gettempdir())
-        / "docwise-session-libraries"
-        / st.session_state["docwise_library_id"]
-        / "vectors.sqlite3"
-    )
+    root = Path(tempfile.gettempdir()) / "docwise-session-libraries"
+    library = root / st.session_state["docwise_library_id"] / "vectors.sqlite3"
+    if not st.session_state.get("docwise_library_cleanup_done"):
+        remove_stale_session_libraries(root, library.parent, SESSION_LIBRARY_TTL_SECONDS)
+        st.session_state["docwise_library_cleanup_done"] = True
+    return library
 
 
 def _similarity_threshold() -> float:
@@ -132,7 +134,8 @@ with st.sidebar:
     if IS_SESSION_LIBRARY:
         st.caption(
             "This browser session uses an isolated SQLite library in host temporary storage. It is not automatically "
-            "deleted when the browser closes; Clear this library removes its database files. Set "
+            "deleted when the browser closes; inactive session libraries are pruned after 24 hours when a later "
+            "session starts. Clear this library removes its database files. Set "
             "DOCWISE_LIBRARY_MODE=persistent only for a private local installation."
         )
     else:

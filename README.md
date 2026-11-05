@@ -190,7 +190,7 @@ This is a small, corpus-specific retrieval and local-abstention check—not an a
 ## Privacy and data handling
 
 - By default, each browser session receives a separate SQLite library in host temporary storage, preventing app-level cross-session search.
-- Session-library files are not automatically removed when a browser closes. **Clear this library** removes that session database. Do not use a shared host for confidential documents unless its storage controls are appropriate.
+- Session-library files are not removed immediately when a browser closes. A later session opportunistically prunes inactive session-library directories after 24 hours; **Clear this library** removes the current session database immediately. Do not use a shared host for confidential documents unless its storage controls are appropriate.
 - `DOCWISE_LIBRARY_MODE=persistent` is for a private, single-user local installation.
 - Local extraction, chunking, embeddings, and retrieval do not call OpenAI.
 - If optional synthesis is configured, only the question and retrieved passages leave the app; the original PDF does not.
