@@ -17,12 +17,13 @@ This guide covers the existing Vercel Container Runtime deployment. It is intent
 ## Deploy or redeploy
 
 1. Verify that the current branch is the intended existing branch and that working-tree changes are reviewed and committed.
-2. In Vercel, use the existing project connected to this repository's `main` branch and its `Dockerfile.vercel` configuration.
-3. Leave `OPENAI_API_KEY` unset for the API-key-free demonstration, or add it only through Vercel's encrypted environment-variable settings. Never put it in Git.
-4. Trigger a deployment and inspect the actual build and runtime logs. The CPU PyTorch wheel is deliberate; replacing it with a CUDA build can exceed practical deployment image limits.
-5. Open the resulting production URL in a fresh browser session before calling the deployment complete.
+2. The current project is not Git-webhook linked, so a push to `main` does not deploy by itself. Use the existing Vercel project and create a production deployment from the current repository files; retain `Dockerfile.vercel` as the container configuration.
+3. Confirm the deployment metadata records the intended `main` commit SHA before considering it a candidate release.
+4. Leave `OPENAI_API_KEY` unset for the API-key-free demonstration, or add it only through Vercel's encrypted environment-variable settings. Never put it in Git.
+5. Inspect the actual build and runtime logs. The CPU PyTorch wheel is deliberate; replacing it with a CUDA build can exceed practical deployment image limits.
+6. Open the resulting production URL in a fresh browser session before calling the deployment complete.
 
-The currently verified public deployment is [docwise-rag-chatbot.vercel.app](https://docwise-rag-chatbot.vercel.app). A deployment URL is not proof of a working RAG flow; perform the smoke test below after every material runtime change.
+The currently verified public deployment is [docwise-rag-chatbot.vercel.app](https://docwise-rag-chatbot.vercel.app). Its most recent release was built from `e744bd2` on 2026-11-05 and returned HTTP 200 after deployment. A deployment URL is not proof of a working RAG flow; perform the smoke test below after every material runtime change.
 
 ## Production smoke test
 
