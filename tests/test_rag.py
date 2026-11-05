@@ -8,7 +8,17 @@ from unittest.mock import patch
 
 import numpy as np
 
-from rag import ABSTENTION_MESSAGE, _extractive_answer, add_pdf, answer_question, chunk_pages, clear_library, list_sources
+from rag import (
+    ABSTENTION_MESSAGE,
+    OPENAI_MAX_RETRIES,
+    OPENAI_REQUEST_TIMEOUT_SECONDS,
+    _extractive_answer,
+    add_pdf,
+    answer_question,
+    chunk_pages,
+    clear_library,
+    list_sources,
+)
 
 
 class _FakeEmbeddingModel:
@@ -86,8 +96,13 @@ class RagRegressionTests(unittest.TestCase):
         ]
         with patch("rag.retrieve", return_value=passages), patch.dict(
             os.environ, {"OPENAI_API_KEY": "test-key"}, clear=False
-        ), patch("openai.OpenAI", side_effect=RuntimeError("provider unavailable")):
+        ), patch("openai.OpenAI") as client_factory:
+            client_factory.return_value.responses.create.side_effect = RuntimeError("provider unavailable")
             answer, evidence = answer_question("When does fall semester begin?")
+        client_factory.assert_called_once_with(
+            timeout=OPENAI_REQUEST_TIMEOUT_SECONDS,
+            max_retries=OPENAI_MAX_RETRIES,
+        )
         self.assertIn("Local fallback — OpenAI synthesis unavailable", answer)
         self.assertIn("September 3", answer)
         self.assertEqual(evidence, passages)

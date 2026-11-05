@@ -44,6 +44,8 @@ from sentence_transformers import SentenceTransformer
 
 DB_PATH = Path(os.getenv("VECTOR_DB_PATH", str(DEFAULT_DATA_DIR / "vectors.sqlite3")))
 EMBED_MODEL = os.getenv("EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
+OPENAI_REQUEST_TIMEOUT_SECONDS = 25.0
+OPENAI_MAX_RETRIES = 0
 _model = None
 
 
@@ -322,7 +324,11 @@ def answer_question(
         try:
             from openai import OpenAI
 
-            response = OpenAI().responses.create(
+            # Keep an optional provider outage from blocking the local fallback for minutes.
+            response = OpenAI(
+                timeout=OPENAI_REQUEST_TIMEOUT_SECONDS,
+                max_retries=OPENAI_MAX_RETRIES,
+            ).responses.create(
                 model=os.getenv("OPENAI_MODEL", "gpt-4.1-mini"),
                 input=[
                     {
