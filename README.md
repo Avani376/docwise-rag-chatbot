@@ -1,6 +1,6 @@
 ![Docwise — Ask your PDFs. Get answers with evidence.](https://raw.githubusercontent.com/Avani376/docwise-rag-chatbot/7b1c3ab77fbeb755cd766eb1736ac6d8e8d1ce16/assets/docwise-banner.gif)
 
-[Static banner fallback](https://raw.githubusercontent.com/Avani376/docwise-rag-chatbot/7b1c3ab77fbeb755cd766eb1736ac6d8e8d1ce16/assets/docwise-banner.png)
+[Open animated banner](https://raw.githubusercontent.com/Avani376/docwise-rag-chatbot/7b1c3ab77fbeb755cd766eb1736ac6d8e8d1ce16/assets/docwise-banner.gif) · [Static banner fallback](https://raw.githubusercontent.com/Avani376/docwise-rag-chatbot/7b1c3ab77fbeb755cd766eb1736ac6d8e8d1ce16/assets/docwise-banner.png)
 
 # Docwise — RAG Chatbot for PDF Documents
 
