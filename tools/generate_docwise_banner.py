@@ -305,7 +305,9 @@ def _quantize(frames: list[Image.Image]) -> list[Image.Image]:
 def main() -> None:
     ASSETS.mkdir(parents=True, exist_ok=True)
     frames = [render_frame(index / FRAME_COUNT) for index in range(FRAME_COUNT)]
-    static = render_frame(0.67).convert("RGB")
+    # Use the center of the grounded-answer stage, not a cross-fade, so the
+    # static GitHub fallback remains immediately legible on its own.
+    static = render_frame(0.60).convert("RGB")
     static.save(ASSETS / "docwise-banner.png", optimize=True, quality=92)
     quantized = _quantize(frames)
     quantized[0].save(
@@ -314,7 +316,9 @@ def main() -> None:
         append_images=quantized[1:],
         duration=FRAME_DURATION_MS,
         loop=0,
-        disposal=2,
+        # Preserve the constant Docwise brand layer between optimized GIF
+        # frames; disposal=2 can make it flicker in some GIF renderers.
+        disposal=1,
         optimize=True,
     )
 
